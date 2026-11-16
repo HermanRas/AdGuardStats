@@ -1,0 +1,6 @@
+# supercronic schedule. Times are local (TZ, default Africa/Johannesburg). Each job takes its own
+# flock, so runs never overlap, and logs one summary line to stdout (docker logs).
+*/5 * * * *   php /app/bin/ingest.php
+0 3 * * 1     php -d memory_limit=512M /app/bin/update-lists.php
+*/30 * * * *  php /app/bin/cloudflare.php
+30 3 * * *    php /app/bin/prune.php

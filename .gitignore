@@ -1,0 +1,8 @@
+# Secrets and runtime data never go in git.
+.env
+data/
+*.sqlite
+*.sqlite-*
+
+# Local dev notes (design, progress, host details): never pushed.
+Doc/

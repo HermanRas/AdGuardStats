@@ -1,0 +1,123 @@
+# Builds the AdGuard Stats image, proves it works against fixture data (no AdGuard, no network lists),
+# and publishes it to GHCR as ghcr.io/hermanras/adguardstats: :latest and :sha-<commit> from main,
+# and :<tag> (e.g. :v0.5.0-beta) when a v* tag is pushed.
+# Nothing is pushed that has not first been started and talked to.
+name: image
+
+on:
+  push:
+    branches: [main]
+    tags: ['v*']
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Lint and unit tests
+        run: |
+          docker run --rm -v "$PWD/App":/app -w /app php:8.4-cli sh -c '
+            set -e
+            find . -name "*.php" -print0 | xargs -0 -n1 php -l > /dev/null
+            php tests/run.php'
+
+      - uses: docker/setup-buildx-action@v4
+
+      - name: Work out the image name
+        # Docker repository names must be lowercase; `HermanRas` is rejected.
+        run: echo "IMAGE=ghcr.io/${GITHUB_REPOSITORY_OWNER,,}/adguardstats" >> "$GITHUB_ENV"
+
+      - name: Build the image
+        uses: docker/build-push-action@v7
+        with:
+          context: .
+          file: Docker/Dockerfile
+          load: true
+          tags: adguardstats:ci
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: It serves the app
+        run: |
+          # No AdGuard and no list downloads: ingest skips (ADGUARD_URL empty) and the fixture lists stand in.
+          docker run -d --name app -p 8080:80 -e ADGUARD_URL= -e LISTS_ON_START=0 adguardstats:ci
+          fail() { echo "::error::$1"; docker logs app; exit 1; }
+          for i in $(seq 1 20); do curl -fs -o /dev/null http://localhost:8080/api/health.php && break; sleep 1; done
+
+          docker cp App/tests/fixtures app:/tmp/fixtures
+          docker exec -u www-data app php /app/bin/import-fixture.php /tmp/fixtures/querylog.json /tmp/fixtures/lists \
+            || fail "fixture import failed"
+
+          # The dashboard, as HTML.
+          type=$(curl -s -o /dev/null -w '%{http_code} %{content_type}' http://localhost:8080/)
+          case "$type" in "200 text/html"*) ;; *) fail "/ answered $type" ;; esac
+          code=$(curl -s -o /dev/null -w '%{http_code}' http://localhost:8080/status.php)
+          [ "$code" = 200 ] || fail "status.php answered $code"
+          for f in assets/app.css assets/app.js assets/logo.svg vendor/chart.umd.min.js; do
+            code=$(curl -s -o /dev/null -w '%{http_code}' "http://localhost:8080/$f")
+            [ "$code" = 200 ] || fail "$f answered $code"
+          done
+
+          # Health is JSON and ok.
+          curl -fs http://localhost:8080/api/health.php | jq -e '.ok == true and .schema_version >= 1' > /dev/null \
+            || fail "health.php is not ok: $(curl -s http://localhost:8080/api/health.php)"
+
+          # The fixture totals: 20 queries, 1 Allow / 7 Block / 12 Default, over three local days.
+          s=$(curl -fs 'http://localhost:8080/api/summary.php?from=2026-11-10&to=2026-11-12') || fail "summary.php failed"
+          echo "$s" | jq -e '.total == 20 and .status.A == 1 and .status.B == 7 and .status.D == 12' > /dev/null \
+            || fail "summary totals wrong: $s"
+          echo "$s" | jq -e '[.series[] | .A + .B + .D] == [6, 10, 4]' > /dev/null || fail "daily series wrong: $s"
+          l=$(curl -fs 'http://localhost:8080/api/log.php?from=2026-11-10&to=2026-11-12&status=B&category=telemetry') || fail "log.php failed"
+          echo "$l" | jq -e '(.rows | length) == 2' > /dev/null || fail "filtered log wrong: $l"
+
+          # Bad parameters are a 400, never a 500.
+          for q in 'summary.php?from=2026-02-30' 'summary.php?status=X' 'log.php?client=1%20OR%201' 'log.php?before=abc' 'summary.php?category=nope'; do
+            code=$(curl -s -o /dev/null -w '%{http_code}' "http://localhost:8080/api/$q")
+            [ "$code" = 400 ] || fail "$q answered $code"
+          done
+          code=$(curl -s -o /dev/null -w '%{http_code}' -X POST http://localhost:8080/api/log.php)
+          [ "$code" = 405 ] || fail "POST answered $code"
+
+          # No secrets, tests, docs or databases baked into the image.
+          leaked=$(docker run --rm --entrypoint sh adguardstats:ci -c \
+            'find /app /var/www \( -name ".env" -o -name "*.md" -o -name "*.sqlite*" -o -path "*/tests*" \) -print')
+          [ -z "$leaked" ] || fail "should not be in the image: $leaked"
+
+      - name: Tear down
+        if: always()
+        run: docker rm -f app || true
+
+      - name: Work out the tags
+        if: github.event_name == 'push'
+        run: |
+          if [ "$GITHUB_REF_TYPE" = tag ]; then
+            echo "TAGS=$IMAGE:$GITHUB_REF_NAME" >> "$GITHUB_ENV"
+          else
+            # `latest` is what the host pulls; `sha-…` is what you pin to roll back.
+            printf 'TAGS<<EOF\n%s\n%s\nEOF\n' "$IMAGE:latest" "$IMAGE:sha-$GITHUB_SHA" >> "$GITHUB_ENV"
+          fi
+
+      - name: Log in to GHCR
+        if: github.event_name == 'push'
+        uses: docker/login-action@v4
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Push
+        if: github.event_name == 'push'
+        uses: docker/build-push-action@v7
+        with:
+          context: .
+          file: Docker/Dockerfile
+          push: true
+          tags: ${{ env.TAGS }}
+          cache-from: type=gha

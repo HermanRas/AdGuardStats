@@ -1,0 +1,11 @@
+# Build context is the repo root; only App/ (minus tests) and the Docker/ support files go in.
+*
+!App
+!Docker/apache.conf
+!Docker/php.ini
+!Docker/entrypoint.sh
+App/tests
+**/*.md
+**/*.sqlite
+**/*.sqlite-*
+**/.env

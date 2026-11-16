@@ -1,0 +1,523 @@
+{
+ "data": [
+  {
+   "answer": [],
+   "answer_dnssec": false,
+   "cached": false,
+   "client": "192.0.2.13",
+   "client_info": {
+    "whois": {},
+    "name": "",
+    "disallowed_rule": "",
+    "disallowed": false
+   },
+   "client_proto": "",
+   "elapsedMs": "1.25",
+   "question": {
+    "class": "IN",
+    "name": "unknown-thing.example",
+    "type": "A"
+   },
+   "reason": "NotFilteredNotFound",
+   "rules": [],
+   "status": "NOERROR",
+   "time": "2026-11-12T10:00:03.000000000Z",
+   "upstream": ""
+  },
+  {
+   "answer": [],
+   "answer_dnssec": false,
+   "cached": false,
+   "client": "192.0.2.13",
+   "client_info": {
+    "whois": {},
+    "name": "",
+    "disallowed_rule": "",
+    "disallowed": false
+   },
+   "client_proto": "",
+   "elapsedMs": "1.25",
+   "question": {
+    "class": "IN",
+    "name": "cdn.both-lists.example",
+    "type": "A"
+   },
+   "reason": "FilteredBlackList",
+   "rules": [
+    {
+     "filter_list_id": 1,
+     "text": "||both-lists.example^"
+    }
+   ],
+   "status": "NOERROR",
+   "time": "2026-11-12T10:00:02.000000000Z",
+   "upstream": "",
+   "rule": "||both-lists.example^",
+   "filterId": 1
+  },
+  {
+   "answer": [],
+   "answer_dnssec": false,
+   "cached": false,
+   "client": "192.0.2.13",
+   "client_info": {
+    "whois": {},
+    "name": "",
+    "disallowed_rule": "",
+    "disallowed": false
+   },
+   "client_proto": "",
+   "elapsedMs": "1.25",
+   "question": {
+    "class": "IN",
+    "name": "me.github.io",
+    "type": "A"
+   },
+   "reason": "NotFilteredNotFound",
+   "rules": [],
+   "status": "NOERROR",
+   "time": "2026-11-12T10:00:01.000000000Z",
+   "upstream": ""
+  },
+  {
+   "answer": [],
+   "answer_dnssec": false,
+   "cached": false,
+   "client": "192.0.2.13",
+   "client_info": {
+    "whois": {},
+    "name": "",
+    "disallowed_rule": "",
+    "disallowed": false
+   },
+   "client_proto": "",
+   "elapsedMs": "1.25",
+   "question": {
+    "class": "IN",
+    "name": "4.2.0.192.in-addr.arpa",
+    "type": "PTR"
+   },
+   "reason": "NotFilteredNotFound",
+   "rules": [],
+   "status": "NOERROR",
+   "time": "2026-11-12T10:00:00.000000000Z",
+   "upstream": ""
+  },
+  {
+   "answer": [],
+   "answer_dnssec": false,
+   "cached": false,
+   "client": "192.0.2.11",
+   "client_info": {
+    "whois": {},
+    "name": "Phone",
+    "disallowed_rule": "",
+    "disallowed": false
+   },
+   "client_proto": "dot",
+   "elapsedMs": "1.25",
+   "question": {
+    "class": "IN",
+    "name": "social.example",
+    "type": "AAAA"
+   },
+   "reason": "NotFilteredNotFound",
+   "rules": [],
+   "status": "NOERROR",
+   "time": "2026-11-11T09:30:03.000000000Z",
+   "upstream": ""
+  },
+  {
+   "answer": [],
+   "answer_dnssec": false,
+   "cached": false,
+   "client": "192.0.2.11",
+   "client_info": {
+    "whois": {},
+    "name": "Phone",
+    "disallowed_rule": "",
+    "disallowed": false
+   },
+   "client_proto": "dot",
+   "elapsedMs": "1.25",
+   "question": {
+    "class": "IN",
+    "name": "mail.social.example",
+    "type": "A"
+   },
+   "reason": "NotFilteredNotFound",
+   "rules": [],
+   "status": "NOERROR",
+   "time": "2026-11-11T09:30:02.000000000Z",
+   "upstream": ""
+  },
+  {
+   "answer": [],
+   "answer_dnssec": false,
+   "cached": false,
+   "client": "192.0.2.11",
+   "client_info": {
+    "whois": {},
+    "name": "Phone",
+    "disallowed_rule": "",
+    "disallowed": false
+   },
+   "client_proto": "dot",
+   "elapsedMs": "1.25",
+   "question": {
+    "class": "IN",
+    "name": "a.b.shop.co.uk",
+    "type": "A"
+   },
+   "reason": "NotFilteredNotFound",
+   "rules": [],
+   "status": "NOERROR",
+   "time": "2026-11-11T09:30:01.000000000Z",
+   "upstream": ""
+  },
+  {
+   "answer": [],
+   "answer_dnssec": false,
+   "cached": false,
+   "client": "192.0.2.11",
+   "client_info": {
+    "whois": {},
+    "name": "Phone",
+    "disallowed_rule": "",
+    "disallowed": false
+   },
+   "client_proto": "dot",
+   "elapsedMs": "1.25",
+   "question": {
+    "class": "IN",
+    "name": "upstream.fail.example",
+    "type": "A"
+   },
+   "reason": "NotFilteredError",
+   "rules": [],
+   "status": "NOERROR",
+   "time": "2026-11-11T09:30:00.000000000Z",
+   "upstream": ""
+  },
+  {
+   "answer": [],
+   "answer_dnssec": false,
+   "cached": false,
+   "client": "192.0.2.11",
+   "client_info": {
+    "whois": {},
+    "name": "Phone",
+    "disallowed_rule": "",
+    "disallowed": false
+   },
+   "client_proto": "dot",
+   "elapsedMs": "1.25",
+   "question": {
+    "class": "IN",
+    "name": "weird..example",
+    "type": "A"
+   },
+   "reason": "FilteredInvalid",
+   "rules": [],
+   "status": "NOERROR",
+   "time": "2026-11-11T08:00:04.000000000Z",
+   "upstream": ""
+  },
+  {
+   "answer": [],
+   "answer_dnssec": false,
+   "cached": false,
+   "client": "192.0.2.10",
+   "client_info": {
+    "whois": {},
+    "name": "Laptop",
+    "disallowed_rule": "",
+    "disallowed": false
+   },
+   "client_proto": "",
+   "elapsedMs": "1.25",
+   "question": {
+    "class": "IN",
+    "name": "x.myhome.example",
+    "type": "A"
+   },
+   "reason": "RewriteRule",
+   "rules": [
+    {
+     "filter_list_id": 1,
+     "text": "|x.myhome.example^$dnsrewrite=192.0.2.5"
+    }
+   ],
+   "status": "NOERROR",
+   "time": "2026-11-11T08:00:03.000000000Z",
+   "upstream": "",
+   "rule": "|x.myhome.example^$dnsrewrite=192.0.2.5",
+   "filterId": 1
+  },
+  {
+   "answer": [],
+   "answer_dnssec": false,
+   "cached": false,
+   "client": "192.0.2.10",
+   "client_info": {
+    "whois": {},
+    "name": "Laptop",
+    "disallowed_rule": "",
+    "disallowed": false
+   },
+   "client_proto": "",
+   "elapsedMs": "1.25",
+   "question": {
+    "class": "IN",
+    "name": "printer.lan",
+    "type": "A"
+   },
+   "reason": "RewriteEtcHosts",
+   "rules": [],
+   "status": "NOERROR",
+   "time": "2026-11-11T08:00:02.000000000Z",
+   "upstream": ""
+  },
+  {
+   "answer": [],
+   "answer_dnssec": false,
+   "cached": false,
+   "client": "192.0.2.10",
+   "client_info": {
+    "whois": {},
+    "name": "Laptop",
+    "disallowed_rule": "",
+    "disallowed": false
+   },
+   "client_proto": "",
+   "elapsedMs": "1.25",
+   "question": {
+    "class": "IN",
+    "name": "nas.home.arpa",
+    "type": "A"
+   },
+   "reason": "Rewrite",
+   "rules": [],
+   "status": "NOERROR",
+   "time": "2026-11-11T08:00:01.000000000Z",
+   "upstream": ""
+  },
+  {
+   "answer": [],
+   "answer_dnssec": false,
+   "cached": false,
+   "client": "192.0.2.10",
+   "client_info": {
+    "whois": {},
+    "name": "Laptop",
+    "disallowed_rule": "",
+    "disallowed": false
+   },
+   "client_proto": "",
+   "elapsedMs": "1.25",
+   "question": {
+    "class": "IN",
+    "name": "www.google.com",
+    "type": "A"
+   },
+   "reason": "FilteredSafeSearch",
+   "rules": [],
+   "status": "NOERROR",
+   "time": "2026-11-11T08:00:00.000000000Z",
+   "upstream": ""
+  },
+  {
+   "answer": [],
+   "answer_dnssec": false,
+   "cached": false,
+   "client": "192.0.2.12",
+   "client_info": {
+    "whois": {},
+    "name": "",
+    "disallowed_rule": "",
+    "disallowed": false
+   },
+   "client_proto": "doh",
+   "elapsedMs": "1.25",
+   "question": {
+    "class": "IN",
+    "name": "adult.example",
+    "type": "A"
+   },
+   "reason": "FilteredParental",
+   "rules": [],
+   "status": "NOERROR",
+   "time": "2026-11-10T22:00:00.000000000Z",
+   "upstream": "",
+   "client_id": "kid"
+  },
+  {
+   "answer": [],
+   "answer_dnssec": false,
+   "cached": false,
+   "client": "192.0.2.12",
+   "client_info": {
+    "whois": {},
+    "name": "",
+    "disallowed_rule": "",
+    "disallowed": false
+   },
+   "client_proto": "doh",
+   "elapsedMs": "1.25",
+   "question": {
+    "class": "IN",
+    "name": "bad.phish.example",
+    "type": "A"
+   },
+   "reason": "FilteredSafeBrowsing",
+   "rules": [],
+   "status": "NOERROR",
+   "time": "2026-11-10T21:59:59.000000000Z",
+   "upstream": "",
+   "client_id": "kid"
+  },
+  {
+   "answer": [],
+   "answer_dnssec": false,
+   "cached": false,
+   "client": "192.0.2.12",
+   "client_info": {
+    "whois": {},
+    "name": "",
+    "disallowed_rule": "",
+    "disallowed": false
+   },
+   "client_proto": "doh",
+   "elapsedMs": "1.25",
+   "question": {
+    "class": "IN",
+    "name": "video.stream.example",
+    "type": "AAAA"
+   },
+   "reason": "FilteredBlockedService",
+   "rules": [],
+   "status": "NOERROR",
+   "time": "2026-11-10T07:11:00.000000000Z",
+   "upstream": "",
+   "client_id": "kid"
+  },
+  {
+   "answer": [],
+   "answer_dnssec": false,
+   "cached": false,
+   "client": "192.0.2.11",
+   "client_info": {
+    "whois": {},
+    "name": "Phone",
+    "disallowed_rule": "",
+    "disallowed": false
+   },
+   "client_proto": "dot",
+   "elapsedMs": "1.25",
+   "question": {
+    "class": "IN",
+    "name": "telemetry.vendor.example",
+    "type": "A"
+   },
+   "reason": "FilteredBlackList",
+   "rules": [
+    {
+     "filter_list_id": 1,
+     "text": "||telemetry.vendor.example^"
+    }
+   ],
+   "status": "NOERROR",
+   "time": "2026-11-10T07:10:00.000000000Z",
+   "upstream": "",
+   "rule": "||telemetry.vendor.example^",
+   "filterId": 1
+  },
+  {
+   "answer": [],
+   "answer_dnssec": false,
+   "cached": false,
+   "client": "192.0.2.11",
+   "client_info": {
+    "whois": {},
+    "name": "Phone",
+    "disallowed_rule": "",
+    "disallowed": false
+   },
+   "client_proto": "dot",
+   "elapsedMs": "1.25",
+   "question": {
+    "class": "IN",
+    "name": "metric.gstatic.com",
+    "type": "HTTPS"
+   },
+   "reason": "NotFilteredAllowList",
+   "rules": [
+    {
+     "filter_list_id": 1,
+     "text": "@@||metric.gstatic.com^"
+    }
+   ],
+   "status": "NOERROR",
+   "time": "2026-11-10T06:00:03.300000003Z",
+   "upstream": "",
+   "rule": "@@||metric.gstatic.com^",
+   "filterId": 1
+  },
+  {
+   "answer": [],
+   "answer_dnssec": false,
+   "cached": false,
+   "client": "192.0.2.10",
+   "client_info": {
+    "whois": {},
+    "name": "Laptop",
+    "disallowed_rule": "",
+    "disallowed": false
+   },
+   "client_proto": "",
+   "elapsedMs": "1.25",
+   "question": {
+    "class": "IN",
+    "name": "ads.tracker.example",
+    "type": "A"
+   },
+   "reason": "FilteredBlackList",
+   "rules": [
+    {
+     "filter_list_id": 1,
+     "text": "||tracker.example^"
+    }
+   ],
+   "status": "NOERROR",
+   "time": "2026-11-10T06:00:02.200000002Z",
+   "upstream": "",
+   "rule": "||tracker.example^",
+   "filterId": 1
+  },
+  {
+   "answer": [],
+   "answer_dnssec": false,
+   "cached": false,
+   "client": "192.0.2.10",
+   "client_info": {
+    "whois": {},
+    "name": "Laptop",
+    "disallowed_rule": "",
+    "disallowed": false
+   },
+   "client_proto": "",
+   "elapsedMs": "1.25",
+   "question": {
+    "class": "IN",
+    "name": "www.news.example",
+    "type": "A"
+   },
+   "reason": "NotFilteredNotFound",
+   "rules": [],
+   "status": "NOERROR",
+   "time": "2026-11-10T06:00:01.100000001Z",
+   "upstream": ""
+  }
+ ],
+ "oldest": ""
+}

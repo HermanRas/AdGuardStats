@@ -1,0 +1,23 @@
+# AdGuard Stats next to AdGuard Home (e.g. in /opt/adguardstats, with .env and data/ beside this file).
+# Uses the image CI publishes to GHCR; nothing is built on the host.
+#   docker compose pull && docker compose up -d
+# Set STATS_TAG=sha-<commit> to pin a build; that is also how you roll back.
+# It shows your network's browsing history: reach it only through a reverse proxy on a private network
+# (LAN/VPN), never a public hostname. `web` is the external network AdGuard is on; change it to yours.
+#
+# Local preview: docker build -t adguardstats . && docker run --rm -p 8090:80 -v "$PWD/data:/data" adguardstats
+services:
+  adguardstats:
+    image: ghcr.io/hermanras/adguardstats:${STATS_TAG:-latest}
+    container_name: adguardstats
+    env_file: .env
+    volumes:
+      - ./data:/data
+    # ports:  # internal only - reached via the web network
+      # - "8090:80"
+    restart: unless-stopped
+
+networks:
+  default:
+    name: web
+    external: true
