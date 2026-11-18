@@ -5,7 +5,7 @@ A read-only sidecar for [AdGuard Home](https://github.com/AdguardTeam/AdGuardHom
 - **Dashboard:** stat tiles, per-day stacked bars (**Allow / Block / Default**), a status donut and a category pie, for Today, Week, Month or any date range, for all clients or just one.
 - **Click to filter:** click a bar segment, a donut slice or a pie slice and the log below filters to match. Every filter lives in the URL, so views can be bookmarked and the back button works.
 - **Query log:** time, base domain (hover for the full name, type and protocol), client, category and status (hover for AdGuard's reason and the matching rule). Includes a domain search and "Load more".
-- **Categories:** from the [UT1 blacklists](https://dsi.ut-capitole.fr/blacklists/) and [HaGeZi](https://github.com/hagezi/dns-blocklists) lists, refreshed weekly, plus manual overrides and optional Cloudflare lookups for what is left. 18 categories: Ads & Tracking, Telemetry, Social, Video & Streaming, Gaming, and others.
+- **Categories:** from the [UT1 blacklists](https://dsi.ut-capitole.fr/blacklists/) and [HaGeZi](https://github.com/hagezi/dns-blocklists) lists, refreshed weekly, plus manual overrides and optional Cloudflare lookups for what is left. 21 categories: Ads & Tracking, Telemetry, Social, Video & Streaming, Gaming, Technology, Business, and others.
 - **Keeps history:** raw queries are kept for `RETENTION_DAYS` (default 180); the daily totals are kept forever. A weekly database backup is kept.
 - **Read-only:** it never changes anything in AdGuard.
 
@@ -76,7 +76,7 @@ Update with `docker compose pull && docker compose up -d`. To pin or roll back a
 
 Domains that no override or list matches can be looked up in [Cloudflare's domain intelligence](https://developers.cloudflare.com/api/resources/intel/subresources/domains/), which is free on any Cloudflare account. Create an API token with only **Account › Intel › Read**, set `CF_ENABLED=1`, `CF_ACCOUNT_ID` and `CF_API_TOKEN`, and restart. Every 30 minutes the job sends up to `CF_BATCH` base domains (never clients or times), in bulk requests of 10. Local names, IPs and reverse zones are never sent. Run `docker exec -u www-data adguardstats php /app/bin/cloudflare.php --dry-run` to see what the next run would send.
 
-Cloudflare's category names map onto the app's categories in the `cloudflare` section of [App/config/categories.php](App/config/categories.php); a security risk (malware, phishing, ...) wins over a content category. Broad ones such as *Technology* or *Business* are left unmapped, so those domains stay Uncategorised; the Status page lists the most common unmapped names so you can add them.
+Cloudflare's category names map onto the app's categories in the `cloudflare` section of [App/config/categories.php](App/config/categories.php). Every category Cloudflare publishes is mapped; general ones land in three broad buckets (*Technology*, *Business*, *Lifestyle & Entertainment*). When a domain has several, the most specific wins: a security risk first, then content such as ads, video or social, and the broad buckets last. A name Cloudflare adds later stays Uncategorised until it is mapped; the Status page lists any such names.
 
 ### Logs and health
 

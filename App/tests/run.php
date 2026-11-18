@@ -155,7 +155,10 @@ check('cf classify risk beats content', Cloudflare::classify(['content_categorie
     'risk_types' => [$cfc('Phishing')]])['source'], 'cloudflare:Phishing');
 check('cf classify inherited', Cloudflare::classify(['inherited_content_categories' => [$cfc('Webmail')]])['source'],
     'cloudflare:Webmail');
-check('cf classify unmapped', Cloudflare::classify(['content_categories' => [$cfc('Technology')]])['app_category_id'], null);
+check('cf classify unmapped flag', Cloudflare::classify(['content_categories' => [$cfc('CIPA Filter')]])['app_category_id'], null);
+check('cf classify broad bucket', Cloudflare::classify(['content_categories' => [$cfc('Technology')]])['source'], 'cloudflare:Technology');
+check('cf classify specific beats broad', Cloudflare::classify(['content_categories' => [$cfc('Technology'), $cfc('Business'), $cfc('Trackers/Analytics')]])['source'], 'cloudflare:Trackers/Analytics');
+check('cf classify business beats technology', Cloudflare::classify(['content_categories' => [$cfc('Technology'), $cfc('Business')]])['source'], 'cloudflare:Business');
 check('cf classify empty', Cloudflare::classify([])['app_category_id'], null);
 foreach (['example.com' => true, 'x.github.io' => true, 'co.uk' => true, 'printer.lan' => false, 'in-addr.arpa' => false,
     '192.0.2.1' => false, 'wpad' => false, 'thing.example' => false, 'a_b.com' => false] as $b => $want) {

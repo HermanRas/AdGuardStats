@@ -25,6 +25,10 @@ return [
         ['id' => 16, 'slug' => 'gambling',       'name' => 'Gambling',             'colour' => '#a0522d'],
         ['id' => 17, 'slug' => 'malware',        'name' => 'Malware & Phishing',   'colour' => '#e66767'],
         ['id' => 18, 'slug' => 'uncategorised',  'name' => 'Uncategorised',        'colour' => '#7d7d7d'],
+        // Broad buckets, mainly for Cloudflare's general categories (added 2026-11-18).
+        ['id' => 19, 'slug' => 'technology',     'name' => 'Technology',           'colour' => '#9aa84a'],
+        ['id' => 20, 'slug' => 'business',       'name' => 'Business',             'colour' => '#c0785a'],
+        ['id' => 21, 'slug' => 'lifestyle',      'name' => 'Lifestyle & Entertainment', 'colour' => '#d4a73c'],
     ],
 
     // Source category => app slug. Order matters within a source: when a domain is in several
@@ -58,36 +62,64 @@ return [
         'ai' => 'search',
         'lingerie' => 'adult', 'mixed_adult' => 'adult', 'adult' => 'adult',
     ],
-    // Cloudflare Intel risk-type and content-category names => app slug (names from Cloudflare's Gateway
-    // domain categories, checked 2026-11-18). Security risks come first so they win over content.
-    // Broad buckets (Technology, Information Technology, Business, Miscellaneous, ...) are left out on
-    // purpose: those domains stay Uncategorised, and the Status page lists them so they can be mapped.
+    // Cloudflare Intel names (risk types, content categories and the super-category names it also
+    // returns) => app slug. Covers Cloudflare's whole published list (checked 2026-11-18) plus 'Ads' and
+    // 'Trackers/Analytics', which it returns but doesn't publish. When a domain has several, the one
+    // listed EARLIEST here wins, so specific beats broad: security first, then content, and the broad
+    // Lifestyle / Business / Technology buckets last. CIPA and Safe for Kids are filter flags, not
+    // topics, so they are left out. Unknown new names stay Uncategorised and show on the Status page.
     'cloudflare' => [
+        // Security
         'Malware' => 'malware', 'Phishing' => 'malware', 'Command and Control & Botnet' => 'malware',
         'Cryptomining' => 'malware', 'Spyware' => 'malware', 'Compromised Domain' => 'malware',
         'Scam' => 'malware', 'Spam' => 'malware', 'DNS Tunneling' => 'malware',
         'Domain Generation Algorithm' => 'malware', 'Brand Embedding' => 'malware',
-        'Potentially unwanted software' => 'malware', 'Deceptive Ads' => 'malware',
-        // 'Ads' and 'Trackers/Analytics' are returned live but missing from Cloudflare's published list.
+        'Potentially unwanted software' => 'malware', 'Deceptive Ads' => 'malware', 'Hacking' => 'malware',
+        'Child Abuse' => 'malware', 'Security threats' => 'malware', 'Always blocked' => 'malware',
+        // Content
         'Advertisements' => 'ads-tracking', 'Ads' => 'ads-tracking', 'Trackers/Analytics' => 'ads-tracking',
         'Pornography' => 'adult', 'Nudity' => 'adult', 'Adult Themes' => 'adult', 'Lingerie & Bikini' => 'adult',
+        'Drugs' => 'adult', 'Profanity' => 'adult', 'Questionable Activities' => 'adult',
+        'Militancy, Hate & Extremism' => 'adult', 'Violence' => 'adult', 'Weapons' => 'adult',
+        'Questionable Content' => 'adult',
         'Gambling' => 'gambling',
         'Social Networks' => 'social', 'Dating & Relationships' => 'social', 'Forums' => 'social',
         'Photo Sharing' => 'social', 'Personal Blogs' => 'social', 'Professional Networking' => 'social',
+        'Digital Postcards' => 'social',
         'Webmail' => 'messaging', 'Messaging' => 'messaging', 'Instant Messengers' => 'messaging',
         'Chat' => 'messaging', 'Internet Phone & VOIP' => 'messaging',
         'Video Streaming' => 'video', 'Audio Streaming' => 'video', 'Movies' => 'video', 'Television' => 'video',
         'Music' => 'video', 'Radio' => 'video', 'Home Video/DVD' => 'video', 'Cartoons & Anime' => 'video',
         'Gaming' => 'gaming',
         'Ecommerce' => 'shopping', 'Shopping' => 'shopping', 'Auctions & Marketplaces' => 'shopping',
-        'Coupons' => 'shopping',
-        'News & Media' => 'news', 'Magazines' => 'news',
+        'Coupons' => 'shopping', 'Shopping & Auctions' => 'shopping',
+        'News & Media' => 'news', 'Magazines' => 'news', 'Unreliable Information' => 'news',
         'Search Engines' => 'search', 'News, Portal & Search' => 'search', 'Artificial Intelligence' => 'search',
         'Brokerage & Investing' => 'finance', 'Economy & Finance' => 'finance', 'Cryptocurrency' => 'finance',
         'Personal Finance' => 'finance',
         'Education' => 'education', 'Educational Institutions' => 'education', 'Reference' => 'education',
         'Science' => 'education', 'Space & Astronomy' => 'education', 'Translator' => 'education',
-        'Content Servers' => 'cloud-cdn', 'APIs' => 'cloud-cdn', 'File Sharing' => 'cloud-cdn',
-        'Anonymizer' => 'infrastructure', 'Remote Access' => 'infrastructure',
+        'Content Servers' => 'cloud-cdn', 'APIs' => 'cloud-cdn', 'File Sharing' => 'cloud-cdn', 'P2P' => 'cloud-cdn',
+        'Anonymizer' => 'infrastructure', 'Remote Access' => 'infrastructure', 'Private IP Address' => 'infrastructure',
+        'URL Alias/Redirect' => 'infrastructure',
+        'Internet Communication' => 'messaging',
+        // Broad buckets, last
+        'Entertainment' => 'lifestyle', 'Arts' => 'lifestyle', 'Fine Art' => 'lifestyle', 'Comic Books' => 'lifestyle',
+        'Humor' => 'lifestyle', 'Paranormal' => 'lifestyle', 'Arts & Crafts' => 'lifestyle', 'Astrology' => 'lifestyle',
+        'Clothing' => 'lifestyle', 'Fashion' => 'lifestyle', 'Parenting' => 'lifestyle', 'Food & Drink' => 'lifestyle',
+        'Hobbies & Interests' => 'lifestyle', 'Home & Garden' => 'lifestyle', 'Lifestyle' => 'lifestyle',
+        'Pets' => 'lifestyle', 'Photography' => 'lifestyle', 'Sexuality' => 'lifestyle', 'Swimsuits' => 'lifestyle',
+        'Tobacco' => 'lifestyle', 'Body Art' => 'lifestyle', 'Alcohol' => 'lifestyle',
+        'Society & Lifestyle' => 'lifestyle', 'Health & Fitness' => 'lifestyle', 'Sex Education' => 'lifestyle',
+        'Health' => 'lifestyle', 'Sports' => 'lifestyle', 'Travel' => 'lifestyle', 'Vehicles' => 'lifestyle',
+        'Religion & Spirituality' => 'lifestyle', 'Religion' => 'lifestyle', 'Weather' => 'lifestyle',
+        'Business' => 'business', 'Business & Economy' => 'business', 'Job Search & Careers' => 'business',
+        'Real Estate' => 'business', 'Government/Legal' => 'business', 'Government & Politics' => 'business',
+        'Politics, Advocacy, and Government-Related' => 'business', 'Charity and Non-profit' => 'business',
+        'Technology' => 'technology', 'Information Technology' => 'technology', 'Information Security' => 'technology',
+        'Shareware/Freeware' => 'technology', 'Keep Awake Software' => 'technology', 'Login Screens' => 'technology',
+        'Miscellaneous' => 'technology', 'No Content' => 'technology', 'Unreachable' => 'technology',
+        'Parked & For Sale Domains' => 'technology', 'New Domains' => 'technology',
+        'Newly Seen Domains' => 'technology', 'Security Risks' => 'technology',
     ],
 ];
