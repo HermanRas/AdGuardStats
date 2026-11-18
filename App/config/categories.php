@@ -58,6 +58,35 @@ return [
         'ai' => 'search',
         'lingerie' => 'adult', 'mixed_adult' => 'adult', 'adult' => 'adult',
     ],
-    // Cloudflare Intel content-category names (Phase 8) => app slug; filled in once checked live.
-    'cloudflare' => [],
+    // Cloudflare Intel risk-type and content-category names => app slug (names from Cloudflare's Gateway
+    // domain categories, checked 2026-11-18). Security risks come first so they win over content.
+    // Broad buckets (Technology, Information Technology, Business, Miscellaneous, ...) are left out on
+    // purpose: those domains stay Uncategorised, and the Status page lists them so they can be mapped.
+    'cloudflare' => [
+        'Malware' => 'malware', 'Phishing' => 'malware', 'Command and Control & Botnet' => 'malware',
+        'Cryptomining' => 'malware', 'Spyware' => 'malware', 'Compromised Domain' => 'malware',
+        'Scam' => 'malware', 'Spam' => 'malware', 'DNS Tunneling' => 'malware',
+        'Domain Generation Algorithm' => 'malware', 'Brand Embedding' => 'malware',
+        'Potentially unwanted software' => 'malware', 'Deceptive Ads' => 'malware',
+        'Advertisements' => 'ads-tracking',
+        'Pornography' => 'adult', 'Nudity' => 'adult', 'Adult Themes' => 'adult', 'Lingerie & Bikini' => 'adult',
+        'Gambling' => 'gambling',
+        'Social Networks' => 'social', 'Dating & Relationships' => 'social', 'Forums' => 'social',
+        'Photo Sharing' => 'social', 'Personal Blogs' => 'social', 'Professional Networking' => 'social',
+        'Webmail' => 'messaging', 'Messaging' => 'messaging', 'Instant Messengers' => 'messaging',
+        'Chat' => 'messaging', 'Internet Phone & VOIP' => 'messaging',
+        'Video Streaming' => 'video', 'Audio Streaming' => 'video', 'Movies' => 'video', 'Television' => 'video',
+        'Music' => 'video', 'Radio' => 'video', 'Home Video/DVD' => 'video', 'Cartoons & Anime' => 'video',
+        'Gaming' => 'gaming',
+        'Ecommerce' => 'shopping', 'Shopping' => 'shopping', 'Auctions & Marketplaces' => 'shopping',
+        'Coupons' => 'shopping',
+        'News & Media' => 'news', 'Magazines' => 'news',
+        'Search Engines' => 'search', 'News, Portal & Search' => 'search', 'Artificial Intelligence' => 'search',
+        'Brokerage & Investing' => 'finance', 'Economy & Finance' => 'finance', 'Cryptocurrency' => 'finance',
+        'Personal Finance' => 'finance',
+        'Education' => 'education', 'Educational Institutions' => 'education', 'Reference' => 'education',
+        'Science' => 'education', 'Space & Astronomy' => 'education', 'Translator' => 'education',
+        'Content Servers' => 'cloud-cdn', 'APIs' => 'cloud-cdn', 'File Sharing' => 'cloud-cdn',
+        'Anonymizer' => 'infrastructure', 'Remote Access' => 'infrastructure',
+    ],
 ];

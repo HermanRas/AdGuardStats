@@ -1,5 +1,7 @@
 # Secrets and runtime data never go in git.
 .env
+.env.*
+!.env.example
 data/
 *.sqlite
 *.sqlite-*

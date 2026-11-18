@@ -9,3 +9,4 @@ App/tests
 **/*.sqlite
 **/*.sqlite-*
 **/.env
+**/.env.*

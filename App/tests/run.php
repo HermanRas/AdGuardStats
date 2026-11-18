@@ -11,7 +11,7 @@ putenv('TZ=Africa/Johannesburg');
 putenv('LOCAL_DOMAINS=MyHome.example, bad domain!');
 require __DIR__ . '/../src/bootstrap.php';
 
-use App\{AdGuard, Categories, Categoriser, Db, Filters, Ingest, Lists, Psl, Rollup};
+use App\{AdGuard, Categories, Categoriser, Cloudflare, Db, Filters, Ingest, Lists, Psl, Rollup};
 
 $fails = 0;
 $count = 0;
@@ -145,6 +145,37 @@ check('clients', $clients, ['192.0.2.10' => 'Laptop', '192.0.2.11' => 'Phone', '
 
 $daily = $pdo->query('SELECT day, sum(n) FROM daily GROUP BY day ORDER BY day')->fetchAll(PDO::FETCH_KEY_PAIR);
 check('daily by local day', $daily, ['2026-11-10' => 6, '2026-11-11' => 10, '2026-11-12' => 4]);
+
+// ---- Cloudflare enrichment (no network: results are faked) ----
+$cfc = static fn (string $n) => ['id' => 1, 'name' => $n, 'super_category_id' => 1];
+check('cf classify content', Cloudflare::classify(['content_categories' => [$cfc('Technology'), $cfc('Video Streaming')]]),
+    ['app_category_id' => Categories::idForSlug('video'), 'source' => 'cloudflare:Video Streaming',
+        'categories' => ['Technology', 'Video Streaming']]);
+check('cf classify risk beats content', Cloudflare::classify(['content_categories' => [$cfc('Gaming')],
+    'risk_types' => [$cfc('Phishing')]])['source'], 'cloudflare:Phishing');
+check('cf classify inherited', Cloudflare::classify(['inherited_content_categories' => [$cfc('Webmail')]])['source'],
+    'cloudflare:Webmail');
+check('cf classify unmapped', Cloudflare::classify(['content_categories' => [$cfc('Technology')]])['app_category_id'], null);
+check('cf classify empty', Cloudflare::classify([])['app_category_id'], null);
+foreach (['example.com' => true, 'x.github.io' => true, 'co.uk' => true, 'printer.lan' => false, 'in-addr.arpa' => false,
+    '192.0.2.1' => false, 'wpad' => false, 'thing.example' => false, 'a_b.com' => false] as $b => $want) {
+    check("cf eligible $b", Cloudflare::eligible($b), $want);
+}
+$cfNow = strtotime('2026-11-13 12:00');
+check('cf pick', Cloudflare::pick($pdo, 100, 90, $cfNow), ['me.github.io']);   // .example bases are not sent
+$ghId = (int) $pdo->query("SELECT id FROM domains WHERE fqdn = 'me.github.io'")->fetchColumn();
+check('cf apply', Cloudflare::apply($pdo, new Categoriser($pdo), ['me.github.io' => ['content_categories' => [$cfc('Personal Blogs')]]], $cfNow),
+    [1, (int) $pdo->query("SELECT count(DISTINCT date(ts, 'unixepoch', '+2 hours')) FROM queries WHERE domain_id = $ghId")->fetchColumn()]);
+check('cf apply category', $pdo->query("SELECT category_source FROM domains WHERE id = $ghId")->fetchColumn(), 'cloudflare:Personal Blogs');
+$socialDaily = (int) $pdo->query('SELECT coalesce(sum(n), 0) FROM daily WHERE category_id = ' . Categories::idForSlug('social'))->fetchColumn();
+$socialRaw = (int) $pdo->query('SELECT count(*) FROM queries q JOIN domains d ON d.id = q.domain_id WHERE d.category_id = '
+    . Categories::idForSlug('social'))->fetchColumn();
+check('cf apply rollup follows', $socialDaily, $socialRaw);
+check('cf daily total unchanged', (int) $pdo->query('SELECT sum(n) FROM daily')->fetchColumn(), 20);
+check('cf pick after: nothing left', Cloudflare::pick($pdo, 100, 90, $cfNow), []);
+check('cf pick after recheck window', Cloudflare::pick($pdo, 100, 90, $cfNow + 91 * 86400), ['me.github.io']);
+check('cf remaining', Cloudflare::remaining($pdo, 90, $cfNow), 0);
+check('cf recategorise keeps cf answer', (new Categoriser($pdo))->recategoriseAll(), 0);
 
 // ---- Ingest walk over a paged fake API: full run, re-run, interrupted backfill resume ----
 final class FakeAdGuard

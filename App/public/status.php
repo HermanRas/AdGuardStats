@@ -43,8 +43,11 @@ if ($ready) {
         ELSE category_source END AS src, count(*) AS n FROM domains GROUP BY src ORDER BY n DESC")->fetchAll();
     $listCounts = json_decode($meta['lists_counts'] ?? '[]', true) ?: [];
     $cf = ['checked' => $count('SELECT count(*) FROM base_cf'),
-        'remaining' => $count("SELECT count(DISTINCT base) FROM domains WHERE category_id = " . Categories::UNCATEGORISED
-            . ' AND base NOT IN (SELECT base FROM base_cf)')];
+        'found' => $count("SELECT count(*) FROM base_cf WHERE json_extract(cf_raw, '$.app_category_id') IS NOT NULL"),
+        'remaining' => App\Cloudflare::remaining($pdo, max(1, (int) env('CF_RECHECK_DAYS', '90'))),
+        // Cloudflare categories seen on domains that stayed Uncategorised: candidates for config/categories.php.
+        'unmapped' => $pdo->query("SELECT j.value AS name, count(*) AS n FROM base_cf, json_each(cf_raw, '$.categories') j
+            WHERE json_extract(cf_raw, '$.app_category_id') IS NULL GROUP BY j.value ORDER BY n DESC LIMIT 8")->fetchAll()];
 }
 $ingestAge = $ready ? time() - max((int) ($meta['ingest_ok_at'] ?? 0), (int) ($meta['ingest_progress_at'] ?? 0)) : PHP_INT_MAX;
 require __DIR__ . '/../src/views/header.php';
@@ -114,9 +117,21 @@ require __DIR__ . '/../src/views/header.php';
       <h2>Cloudflare</h2>
       <dl class="kv">
         <dt>Enabled</dt><dd><?= env('CF_ENABLED', '0') === '1' ? 'yes' : 'no' ?></dd>
-        <dt>Base domains sent</dt><dd><?= $n($cf['checked']) ?></dd>
-        <dt>Uncategorised, unchecked</dt><dd><?= $n($cf['remaining']) ?></dd>
+        <dt>Last good run</dt><dd><?= $e($ago($meta['cf_ok_at'] ?? null)) ?></dd>
+        <?php if (!empty($meta['cf_error'])): ?>
+        <dt>Last error</dt><dd class="bad"><?= $e($meta['cf_error']) ?></dd>
+        <?php endif; ?>
+        <dt>Base domains sent</dt><dd><?= $n($cf['checked']) ?> (<?= $n($cf['found']) ?> categorised)</dd>
+        <dt>Waiting to be sent</dt><dd><?= $n($cf['remaining']) ?></dd>
       </dl>
+      <?php if ($cf['unmapped']): ?>
+      <table class="plain" style="margin-top:12px">
+        <tr><th>Unmapped Cloudflare category</th><th class="n">Domains</th></tr>
+        <?php foreach ($cf['unmapped'] as $r): ?>
+        <tr><td><?= $e($r['name']) ?></td><td class="n"><?= $n($r['n']) ?></td></tr>
+        <?php endforeach; ?>
+      </table>
+      <?php endif; ?>
     </section>
   </div>
 <?php endif; ?>
