@@ -101,15 +101,46 @@ final class Cloudflare
                 }
             }
         }
-        $names = array_values(array_unique($names));
-        $best = null;
+        return self::classifyNames(array_values(array_unique($names)));
+    }
+
+    /**
+     * Maps stored Cloudflare category names to an app category: the name listed earliest in
+     * config/categories.php wins.
+     * @param list<string> $names
+     * @return array{app_category_id:?int, source:?string, categories:list<string>}
+     */
+    public static function classifyNames(array $names): array
+    {
         foreach (Categories::mapping('cloudflare') as $name => $cid) {
             if (in_array($name, $names, true)) {
-                $best = [$cid, 'cloudflare:' . $name];
-                break;
+                return ['app_category_id' => $cid, 'source' => 'cloudflare:' . $name, 'categories' => $names];
             }
         }
-        return ['app_category_id' => $best[0] ?? null, 'source' => $best[1] ?? null, 'categories' => $names];
+        return ['app_category_id' => null, 'source' => null, 'categories' => $names];
+    }
+
+    /**
+     * Re-applies the current mapping to every cached answer (after config/categories.php changes), so
+     * domains already looked up follow the new mapping without asking Cloudflare again. Returns how
+     * many cached answers changed. Run inside the caller's transaction.
+     */
+    public static function reclassifyCache(PDO $pdo): int
+    {
+        $upd = $pdo->prepare('UPDATE base_cf SET cf_raw = ? WHERE base = ?');
+        $changed = 0;
+        foreach ($pdo->query('SELECT base, cf_raw FROM base_cf')->fetchAll() as $r) {
+            $old = json_decode((string) $r['cf_raw'], true);
+            if (!is_array($old)) {
+                continue;
+            }
+            $new = self::classifyNames(array_values(array_filter((array) ($old['categories'] ?? []), 'is_string')));
+            if ($new['app_category_id'] !== ($old['app_category_id'] ?? null) || $new['source'] !== ($old['source'] ?? null)) {
+                $upd->execute([json_encode($new, JSON_UNESCAPED_SLASHES | JSON_INVALID_UTF8_SUBSTITUTE), $r['base']]);
+                $changed++;
+            }
+        }
+        return $changed;
     }
 
     /** A base domain worth sending: a public-looking name, not an IP, reverse zone or local name. */

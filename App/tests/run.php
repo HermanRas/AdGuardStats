@@ -176,6 +176,12 @@ check('cf pick after: nothing left', Cloudflare::pick($pdo, 100, 90, $cfNow), []
 check('cf pick after recheck window', Cloudflare::pick($pdo, 100, 90, $cfNow + 91 * 86400), ['me.github.io']);
 check('cf remaining', Cloudflare::remaining($pdo, 90, $cfNow), 0);
 check('cf recategorise keeps cf answer', (new Categoriser($pdo))->recategoriseAll(), 0);
+// A cached answer saved under an older mapping (name known, no category) is re-mapped on config change.
+$pdo->exec("UPDATE base_cf SET cf_raw = '{\"app_category_id\":null,\"source\":null,\"categories\":[\"Technology\",\"Trackers/Analytics\"]}' WHERE base = 'me.github.io'");
+check('cf reclassify stale cache', Cloudflare::reclassifyCache($pdo), 1);
+check('cf reclassify again is a no-op', Cloudflare::reclassifyCache($pdo), 0);
+(new Categoriser($pdo))->recategoriseAll();
+check('cf reclassified domain', $pdo->query("SELECT category_source FROM domains WHERE fqdn = 'me.github.io'")->fetchColumn(), 'cloudflare:Trackers/Analytics');
 
 // ---- Ingest walk over a paged fake API: full run, re-run, interrupted backfill resume ----
 final class FakeAdGuard

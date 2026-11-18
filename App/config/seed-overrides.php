@@ -87,4 +87,10 @@ return [
     'cloudflare.com'              => ['cloud-cdn', 'Cloudflare'],
     'office.com'                  => ['cloud-cdn', 'Microsoft 365'],
     'adobe.com'                   => ['cloud-cdn', 'Adobe services'],
+    'time.android.com'            => ['infrastructure', 'NTP'],
+    'android.com'                 => ['os-device', 'Android services'],
+    'huawei.com'                  => ['os-device', 'Huawei services'],
+    'dbankcdn.com'                => ['os-device', 'Huawei / Honor CDN'],
+    'gboxlab.com'                 => ['os-device', 'GBox (Google apps on Huawei)'],
+    'analysis.gboxlab.com'        => ['telemetry', 'GBox analytics'],
 ];
