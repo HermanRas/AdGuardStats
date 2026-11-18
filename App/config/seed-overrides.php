@@ -76,4 +76,15 @@ return [
     'truecaller.com'              => ['messaging', 'Truecaller'],
     'codmwest.com'                => ['gaming', 'Call of Duty Mobile'],
     'strem.io'                    => ['video', 'Stremio'],
+    // Busiest bases Cloudflare left in broad buckets (Technology, Business), 2026-11-18
+    'scalibur.io'                 => ['ads-tracking', 'Overwolf Scalibur ad bidder'],
+    'crashlytics.com'             => ['telemetry', 'Firebase Crashlytics crash reports'],
+    'bugsnag.com'                 => ['telemetry', 'Bugsnag crash reports'],
+    'hicloud.com'                 => ['os-device', 'Huawei cloud services'],
+    'samsung.com'                 => ['os-device', 'Samsung services'],
+    'mediatek.com'                => ['os-device', 'MediaTek chipset services'],
+    'pki.goog'                    => ['infrastructure', 'Google certificates (OCSP / CRL)'],
+    'cloudflare.com'              => ['cloud-cdn', 'Cloudflare'],
+    'office.com'                  => ['cloud-cdn', 'Microsoft 365'],
+    'adobe.com'                   => ['cloud-cdn', 'Adobe services'],
 ];

@@ -68,7 +68,8 @@ return [
         'Scam' => 'malware', 'Spam' => 'malware', 'DNS Tunneling' => 'malware',
         'Domain Generation Algorithm' => 'malware', 'Brand Embedding' => 'malware',
         'Potentially unwanted software' => 'malware', 'Deceptive Ads' => 'malware',
-        'Advertisements' => 'ads-tracking',
+        // 'Ads' and 'Trackers/Analytics' are returned live but missing from Cloudflare's published list.
+        'Advertisements' => 'ads-tracking', 'Ads' => 'ads-tracking', 'Trackers/Analytics' => 'ads-tracking',
         'Pornography' => 'adult', 'Nudity' => 'adult', 'Adult Themes' => 'adult', 'Lingerie & Bikini' => 'adult',
         'Gambling' => 'gambling',
         'Social Networks' => 'social', 'Dating & Relationships' => 'social', 'Forums' => 'social',
