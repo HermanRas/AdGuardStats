@@ -158,6 +158,7 @@ check('cf classify inherited', Cloudflare::classify(['inherited_content_categori
 check('cf classify unmapped flag', Cloudflare::classify(['content_categories' => [$cfc('CIPA Filter')]])['app_category_id'], null);
 check('cf classify broad bucket', Cloudflare::classify(['content_categories' => [$cfc('Technology')]])['source'], 'cloudflare:Technology');
 check('cf classify specific beats broad', Cloudflare::classify(['content_categories' => [$cfc('Technology'), $cfc('Business'), $cfc('Trackers/Analytics')]])['source'], 'cloudflare:Trackers/Analytics');
+check('cf classify super-category stays broad', Cloudflare::classify(['content_categories' => [$cfc('Information Security'), $cfc('Internet Communication')]])['app_category_id'], Categories::idForSlug('technology'));
 check('cf classify business beats technology', Cloudflare::classify(['content_categories' => [$cfc('Technology'), $cfc('Business')]])['source'], 'cloudflare:Business');
 check('cf classify empty', Cloudflare::classify([])['app_category_id'], null);
 foreach (['example.com' => true, 'x.github.io' => true, 'co.uk' => true, 'printer.lan' => false, 'in-addr.arpa' => false,

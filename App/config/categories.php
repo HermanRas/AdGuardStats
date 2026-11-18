@@ -102,7 +102,6 @@ return [
         'Content Servers' => 'cloud-cdn', 'APIs' => 'cloud-cdn', 'File Sharing' => 'cloud-cdn', 'P2P' => 'cloud-cdn',
         'Anonymizer' => 'infrastructure', 'Remote Access' => 'infrastructure', 'Private IP Address' => 'infrastructure',
         'URL Alias/Redirect' => 'infrastructure',
-        'Internet Communication' => 'messaging',
         // Broad buckets, last
         'Entertainment' => 'lifestyle', 'Arts' => 'lifestyle', 'Fine Art' => 'lifestyle', 'Comic Books' => 'lifestyle',
         'Humor' => 'lifestyle', 'Paranormal' => 'lifestyle', 'Arts & Crafts' => 'lifestyle', 'Astrology' => 'lifestyle',
@@ -121,5 +120,6 @@ return [
         'Miscellaneous' => 'technology', 'No Content' => 'technology', 'Unreachable' => 'technology',
         'Parked & For Sale Domains' => 'technology', 'New Domains' => 'technology',
         'Newly Seen Domains' => 'technology', 'Security Risks' => 'technology',
+        'Internet Communication' => 'technology',   // super-category; too broad for Messaging
     ],
 ];

@@ -93,4 +93,8 @@ return [
     'dbankcdn.com'                => ['os-device', 'Huawei / Honor CDN'],
     'gboxlab.com'                 => ['os-device', 'GBox (Google apps on Huawei)'],
     'analysis.gboxlab.com'        => ['telemetry', 'GBox analytics'],
+    // No Cloudflare answer, 2026-11-18
+    'rayjump.com'                 => ['ads-tracking', 'Mintegral ad SDK'],
+    'samsungapps.com'             => ['os-device', 'Samsung Galaxy Store'],
+    'live.com'                    => ['messaging', 'Outlook / Microsoft account'],
 ];
